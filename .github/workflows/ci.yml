@@ -1,0 +1,87 @@
+# Проверки репозитория — по канону bx-shef/options. Всё гоняется через
+# ./build.sh, чтобы локальный прогон и прогон в CI не могли разойтись.
+#
+# В защите ветки требуется ровно ОДНА проверка — CI; остальные задачи — её
+# зависимости.
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4', '8.5']
+    steps:
+      - name: Забрать репозиторий
+        uses: actions/checkout@v4
+
+      - name: Поставить PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring
+          coverage: none
+
+      - name: Проверки
+        run: ./build.sh --check
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Забрать репозиторий
+        uses: actions/checkout@v4
+
+      - name: Поставить PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring
+          coverage: none
+
+      - name: Собрать архив
+        run: ./build.sh
+
+      - name: Прочитать версию модуля
+        id: version
+        run: echo "value=$(./build.sh --version)" >> "$GITHUB_OUTPUT"
+
+      - name: Приложить архив к прогону
+        uses: actions/upload-artifact@v4
+        with:
+          name: shef.pristine-${{ steps.version.outputs.value }}
+          path: shef.pristine.zip
+          if-no-files-found: error
+
+  ci:
+    name: CI
+    needs: [checks, build]
+    runs-on: ubuntu-latest
+    # always() — вместе с проверкой ниже: пропущенную задачу защита ветки
+    # засчитала бы как пройденную.
+    if: always()
+    steps:
+      - name: Сверить результаты зависимостей
+        run: |
+          if [ "${{ needs.checks.result }}" != 'success' ] \
+          || [ "${{ needs.build.result }}" != 'success' ]
+          then
+            echo '::error::Не прошла одна из зависимостей'
+            exit 1
+          fi
