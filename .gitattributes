@@ -1,0 +1,13 @@
+* text=auto eol=lf
+*.zip binary
+
+# Что НЕ попадает в Composer-пакет (git archive соблюдает export-ignore).
+# Список обязан совпадать с KEEP в build.sh — сверяет ./build.sh --check.
+/.gitattributes export-ignore
+/.github/ export-ignore
+/.gitignore export-ignore
+/CLAUDE.md export-ignore
+/build.sh export-ignore
+/docs/ export-ignore
+/examples/ export-ignore
+/tests/ export-ignore
