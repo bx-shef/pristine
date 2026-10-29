@@ -54,7 +54,9 @@ namespace {
 	{
 		public static function GetList($by, $order, $filter, $params)
 		{
-			return new StubResult(array_map(static fn($id, $deps) => ['ID' => $id, 'UF_DEPARTMENT' => $deps], array_keys($GLOBALS['stub']['users']), $GLOBALS['stub']['users']));
+			$users = isset($filter['ID']) ? array_intersect_key($GLOBALS['stub']['users'], [(int)$filter['ID'] => true]) : $GLOBALS['stub']['users'];
+
+			return new StubResult(array_map(static fn($id, $deps) => ['ID' => $id, 'UF_DEPARTMENT' => $deps], array_keys($users), $users));
 		}
 	}
 

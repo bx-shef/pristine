@@ -111,6 +111,28 @@ final class Apply
 		return $out;
 	}
 
+	/**
+	 * Названия отделов человека — профиль выбирается так же, как в run()
+	 * (для `Chrome`).
+	 *
+	 * @return list<string>
+	 */
+	public static function departmentsOf(int $userId): array
+	{
+		if($userId <= 0)
+		{
+			return [];
+		}
+		$u = \CUser::GetList('ID', 'ASC', ['ID' => $userId], ['SELECT' => ['UF_DEPARTMENT'], 'FIELDS' => ['ID']])->Fetch();
+		if(!is_array($u) || empty($u['UF_DEPARTMENT']))
+		{
+			return [];
+		}
+		$names = self::departmentNames();
+
+		return array_values(array_filter(array_map(static fn($id) => $names[(int)$id] ?? '', (array)$u['UF_DEPARTMENT'])));
+	}
+
 	/** @return array<int, string> ID отдела → название (структура компании) */
 	private static function departmentNames(): array
 	{
