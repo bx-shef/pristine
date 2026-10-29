@@ -9,6 +9,9 @@
  * `\Shef\Pristine\Apply::run(dryRun: true)` печатает известные ID.
  *
  * Профиль человека важнее отдельского. Без профиля интерфейс не трогается.
+ *
+ * `chrome` — какие группы стиля `\Shef\Pristine\Chrome::GROUPS` скрыть
+ * (`header`, `crm_kanban`, `crm_menu`); нет ключа — все.
  */
 return [
 	'site' => 's1',
@@ -18,9 +21,14 @@ return [
 			'title' => 'Сертификация: эксперты и специалисты',
 			'keep' => ['menu_crm_favorite', 'menu_im_messenger', 'shef_agentflow_admin'],
 		],
+		// Владелец 2026-10-29 (#2): CRM, Мессенджер, Календарь, Документы, Диск,
+		// Сотрудники, «Сертификация: управление», Настройки; BitrixGPT,
+		// Автоматизация, Приложения, Сервисы и прочее — скрыть. Верхнее меню CRM
+		// не трогаем — в `chrome` нет `crm_menu`.
 		'sales_head' => [
 			'title' => 'Начальник отдела продаж',
-			'keep' => ['menu_crm_favorite', 'menu_im_messenger', 'menu_company', 'shef_agentflow_admin'],
+			'keep' => ['menu_crm_favorite', 'menu_im_messenger', 'menu_calendar', 'menu_documents', 'menu_files', 'menu_company', 'shef_agentflow_admin', 'menu_configs_sect'],
+			'chrome' => ['header', 'crm_kanban'],
 		],
 	],
 	// Стандартные пункты левого меню коробки (intranet, .top.menu_ext.php; стенд
