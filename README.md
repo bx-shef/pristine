@@ -68,4 +68,4 @@ PHP 8.2+, Битрикс24 (коробка) с модулем `intranet`, `shef.
 
 ## Лицензия
 
-MIT — [LICENSE](LICENSE).
+Права принадлежат ООО «БэИксШефБай» — [LICENSE](LICENSE).
