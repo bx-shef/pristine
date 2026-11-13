@@ -54,6 +54,23 @@ final class Profiles
 		return null;
 	}
 
+	/**
+	 * Группы стиля `Chrome::GROUPS`, которые скрывает профиль (ключ `chrome`).
+	 * null — ключа нет: все группы.
+	 *
+	 * @return list<string>|null
+	 */
+	public function chrome(string $code): ?array
+	{
+		$p = $this->config['profiles'][$code] ?? null;
+		if(!is_array($p) || !array_key_exists('chrome', $p))
+		{
+			return null;
+		}
+
+		return array_values(array_map('strval', (array)$p['chrome']));
+	}
+
 	/** @return list<string> стандартные пункты меню портала (config: known) */
 	public function known(): array
 	{
