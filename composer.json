@@ -2,7 +2,7 @@
 	"name": "bxshef/pristine",
 	"description": "Битрикс24 (коробка): чистый интерфейс сотрудников — профили левого меню по отделам и людям",
 	"type": "bitrix-module",
-	"license": "MIT",
+	"license": "proprietary",
 	"keywords": ["bitrix", "Bitrix24", "local-module", "left-menu", "ui"],
 	"authors": [
 		{
